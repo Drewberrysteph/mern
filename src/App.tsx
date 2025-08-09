@@ -1,4 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
+import Search from "./components/Search";
 
 type Todo = {
   id: string;
@@ -21,6 +22,7 @@ const todoFixtures = [
 
 const App = () => {
   const [todos, setTodos] = useState(todoFixtures);
+  const [search, setSearch] = useState("");
   const [newTodo, setNewTodo] = useState({
     id: 0,
     title: "",
@@ -57,6 +59,10 @@ const App = () => {
     setTodos((todos) => [...todos, newTodo]);
   };
 
+  const handleSearch = (val: string) => {
+    setSearch(val);
+  };
+
   return (
     <div>
       <h1>Todo</h1>
@@ -70,21 +76,36 @@ const App = () => {
         <button type="submit">Submit</button>
       </form>
       <hr />
-      {todos.map((todo) => {
-        return (
-          <div style={{ display: "flex", alignItems: "center" }} key={todo.id}>
-            <input
-              type="checkbox"
-              checked={todo.completed}
-              onChange={() => handleCompleted(todo.id)}
-            />
-            <p style={{ textDecoration: todo.completed ? "line-through" : "" }}>
-              {todo.title}
-            </p>
-            <button onClick={() => handleRemove(todo.id)}>Remove</button>
-          </div>
-        );
-      })}
+      <Search handleSearch={handleSearch} />
+      {todos
+        .filter((todo) => {
+          if (search.length > 0) {
+            return (
+              todo.title.toLocaleLowerCase() === search.toLocaleLowerCase()
+            );
+          }
+          return todo;
+        })
+        .map((todo) => {
+          return (
+            <div
+              style={{ display: "flex", alignItems: "center" }}
+              key={todo.id}
+            >
+              <input
+                type="checkbox"
+                checked={todo.completed}
+                onChange={() => handleCompleted(todo.id)}
+              />
+              <p
+                style={{ textDecoration: todo.completed ? "line-through" : "" }}
+              >
+                {todo.title}
+              </p>
+              <button onClick={() => handleRemove(todo.id)}>Remove</button>
+            </div>
+          );
+        })}
     </div>
   );
 };
