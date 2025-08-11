@@ -78,34 +78,22 @@ const App = () => {
       <hr />
       <Search handleSearch={handleSearch} />
       {todos
-        .filter((todo) => {
-          if (search.length > 0) {
-            return (
-              todo.title.toLocaleLowerCase() === search.toLocaleLowerCase()
-            );
-          }
-          return todo;
-        })
-        .map((todo) => {
-          return (
-            <div
-              style={{ display: "flex", alignItems: "center" }}
-              key={todo.id}
-            >
-              <input
-                type="checkbox"
-                checked={todo.completed}
-                onChange={() => handleCompleted(todo.id)}
-              />
-              <p
-                style={{ textDecoration: todo.completed ? "line-through" : "" }}
-              >
-                {todo.title}
-              </p>
-              <button onClick={() => handleRemove(todo.id)}>Remove</button>
-            </div>
-          );
-        })}
+        .filter(({ title }) =>
+          search ? title.toLowerCase() === search.toLowerCase() : true
+        )
+        .map(({ id, title, completed }) => (
+          <div key={id} style={{ display: "flex", alignItems: "center" }}>
+            <input
+              type="checkbox"
+              checked={completed}
+              onChange={() => handleCompleted(id)}
+            />
+            <p style={{ textDecoration: completed ? "line-through" : "none" }}>
+              {title}
+            </p>
+            <button onClick={() => handleRemove(id)}>Remove</button>
+          </div>
+        ))}
     </div>
   );
 };
